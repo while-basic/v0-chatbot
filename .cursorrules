@@ -1,0 +1,172 @@
+name: Next.js AI Chat Application Rules
+
+# Main Rules
+main:
+  - Fix all linting errors before running build tests or committing
+  - Fix all typescript errors before running build tests or committing
+  - Prioritize to build for mobile first, desktop second
+  - Check to see if there is a components folder first before creating or installing new ones.
+  - Use "npx shadcn@latest add" to install new components
+
+# OpenAI Rules
+documentation:
+  - Refer to the OpenAI API documentation when writing new code
+
+# Code Changing Rules
+code_changing:
+  - Run build tests before pushing to github
+  - Check for errors before submitting to user
+  - Verify all code is written with best practices
+
+# File Organization Rules
+file_organization:
+  components:
+    - path: components/
+      rules:
+        - All reusable UI components go in components/ui/
+        - Feature-specific components go in components/ root
+        - Use PascalCase for component file names
+        - Each component should have its own file
+        - Group related components in subdirectories
+
+  pages:
+    - path: app/
+      rules:
+        - Follow Next.js 13+ app directory structure
+        - Use lowercase for route folders
+        - Place layouts in layout.tsx files
+        - Place pages in page.tsx files
+        - Keep page components focused on layout and composition
+
+  styles:
+    - path: app/globals.css
+      rules:
+        - Use Tailwind CSS utilities when possible
+        - Custom CSS only for complex animations or overrides
+        - Maintain consistent color scheme using CSS variables
+        - Follow mobile-first responsive design
+
+# Code Style Rules
+code_style:
+  typescript:
+    - Use strict TypeScript with explicit types
+    - Prefer interfaces over type aliases for objects
+    - Use type inference when types are obvious
+    - Export types and interfaces that are used across files
+
+  components:
+    - Use function components with arrow function syntax
+    - Add display names to forwardRef components
+    - Use composition over inheritance
+    - Keep components focused and single-responsibility
+    - Extract complex logic into custom hooks
+
+  naming:
+    - Use PascalCase for components and interfaces
+    - Use camelCase for functions and variables
+    - Use UPPER_CASE for constants
+    - Use descriptive names that indicate purpose
+
+# Development Workflow
+development:
+  commits:
+    - Write clear commit messages with prefixes:
+      - feat: New features
+      - fix: Bug fixes
+      - refactor: Code improvements
+      - style: Formatting changes
+      - docs: Documentation updates
+      - test: Test updates
+
+  branches:
+    - main: Production-ready code
+    - develop: Integration branch
+    - feature/*: New features
+    - fix/*: Bug fixes
+    - release/*: Release preparation
+
+# Testing Rules
+testing:
+  unit:
+    - Test all utility functions
+    - Test custom hooks
+    - Test component logic
+    - Use React Testing Library
+    - Focus on user behavior over implementation
+
+  integration:
+    - Test key user flows
+    - Test API integrations
+    - Test state management
+    - Test routing behavior
+
+# Performance Rules
+performance:
+  optimization:
+    - Use Next.js Image component for images
+    - Implement code splitting
+    - Lazy load non-critical components
+    - Optimize bundle size
+    - Monitor Core Web Vitals
+
+  state:
+    - Use local state for UI-only state
+    - Use context for shared state
+    - Avoid prop drilling
+    - Memoize expensive calculations
+
+# Accessibility Rules
+accessibility:
+  requirements:
+    - Follow WCAG 2.1 guidelines
+    - Use semantic HTML
+    - Implement keyboard navigation
+    - Provide ARIA labels
+    - Maintain sufficient color contrast
+    - Support screen readers
+
+# Mobile Responsiveness
+mobile:
+  requirements:
+    - Design mobile-first
+    - Test on multiple devices
+    - Use responsive Tailwind classes
+    - Implement touch-friendly interactions
+    - Ensure readable font sizes
+
+# Dependencies
+dependencies:
+  management:
+    - Keep dependencies updated
+    - Audit security regularly
+    - Remove unused dependencies
+    - Use exact versions in package.json
+    - Document major dependency changes
+
+# Documentation
+documentation:
+  requirements:
+    - Maintain README.md
+    - Document component props
+    - Document custom hooks
+    - Document API integrations
+    - Include setup instructions
+    - Document environment variables
+
+# Error Handling
+error_handling:
+  requirements:
+    - Implement error boundaries
+    - Handle API errors gracefully
+    - Provide user-friendly error messages
+    - Log errors appropriately
+    - Implement fallback UI
+
+# Security
+security:
+  requirements:
+    - Validate user input
+    - Implement CSRF protection
+    - Use secure authentication
+    - Follow security best practices
+    - Regular security audits 

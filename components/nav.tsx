@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,19 +13,42 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ThemeToggle } from './theme-toggle'
+import { createClient } from '@/lib/supabase/client'
 
 interface User {
-  name: string
-  email: string
-  image?: string
+  id: string
+  email?: string
+  user_metadata: {
+    name?: string
+    avatar_url?: string
+  }
 }
 
-interface NavProps {
-  user?: User | null
-}
+export function Nav() {
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
+  const supabase = createClient()
 
-export function Nav({ user }: NavProps) {
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.refresh()
+  }
+
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full shrink-0 items-center justify-between border-b bg-background px-4">
       <div className="flex items-center gap-2">
@@ -33,7 +58,6 @@ export function Nav({ user }: NavProps) {
         </Link>
       </div>
       <div className="flex items-center gap-4">
-        <ThemeToggle />
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -43,11 +67,11 @@ export function Nav({ user }: NavProps) {
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={user.image}
-                    alt={user.name ?? 'User avatar'}
+                    src={user.user_metadata.avatar_url}
+                    alt={user.user_metadata.name ?? 'User avatar'}
                   />
                   <AvatarFallback>
-                    {user.name?.charAt(0) ?? 'U'}
+                    {user.user_metadata.name?.charAt(0) ?? user.email?.charAt(0) ?? 'U'}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -55,8 +79,8 @@ export function Nav({ user }: NavProps) {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <div className="flex items-center justify-start gap-2 p-2">
                 <div className="flex flex-col space-y-1 leading-none">
-                  {user.name && (
-                    <p className="font-medium">{user.name}</p>
+                  {user.user_metadata.name && (
+                    <p className="font-medium">{user.user_metadata.name}</p>
                   )}
                   {user.email && (
                     <p className="w-[200px] truncate text-sm text-muted-foreground">
@@ -75,10 +99,7 @@ export function Nav({ user }: NavProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
-                onSelect={() => {
-                  // Add sign out logic here
-                  console.log('Sign out')
-                }}
+                onSelect={handleSignOut}
               >
                 Sign out
               </DropdownMenuItem>
